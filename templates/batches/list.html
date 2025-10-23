@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Plant Tracker - Germination Batches</title>
+	<style>
+		body { font-family: Arial, sans-serif; max-width: 1000px; margin: 0 auto; padding: 20px; }
+		h1 { color: #2d5016; }
+		.header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+		.nav { margin-bottom: 20px; }
+		.nav a { margin-right: 15px; padding: 8px 15px; text-decoration: none; background: #f0f0f0; border-radius: 4px; }
+		.nav a.active { background: #4CAF50; color: white; }
+		.btn { padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block; }
+		.btn-primary { background: #4CAF50; color: white; }
+		.btn-secondary { background: #2196F3; color: white; font-size: 12px; padding: 5px 10px; }
+		.btn-danger { background: #f44336; color: white; font-size: 12px; padding: 5px 10px; }
+		table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+		th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+		th { background-color: #4CAF50; color: white; }
+		tr:hover { background-color: #f5f5f5; }
+		.actions { display: flex; gap: 10px; }
+	</style>
+</head>
+<body>
+	<div class="nav">
+		<a href="/" class="active">Batches</a>
+		<a href="/species">Species</a>
+	</div>
+
+	<div class="header">
+		<h1>Germination Batches</h1>
+		<a href="/batches/new" class="btn btn-primary">+ New Batch</a>
+	</div>
+
+	{{if .}}
+	<table>
+		<thead>
+			<tr>
+				<th>Species</th>
+				<th>Cells</th>
+				<th>Seeds/Cell</th>
+				<th>Total Seeds</th>
+				<th>Date</th>
+				<th>Actions</th>
+			</tr>
+		</thead>
+		<tbody>
+			{{range .}}
+			<tr>
+				<td>{{.SpeciesName}}</td>
+				<td>{{.NumCells}}</td>
+				<td>{{.SeedsPerCell}}</td>
+				<td>{{if .TotalSeeds}}{{.TotalSeeds}}{{else}}-{{end}}</td>
+				<td>{{.DateCreated}}</td>
+				<td>
+					<div class="actions">
+						<a href="/batches/edit?id={{.ID}}" class="btn btn-secondary">Edit</a>
+						<form method="POST" action="/batches/delete" style="margin: 0;">
+							<input type="hidden" name="id" value="{{.ID}}">
+							<button type="submit" class="btn btn-danger" onclick="return confirm('Delete this batch?')">Delete</button>
+						</form>
+					</div>
+				</td>
+			</tr>
+			{{end}}
+		</tbody>
+	</table>
+	{{else}}
+	<p>No batches yet. Create your first batch to get started!</p>
+	<p>Note: You need to <a href="/species">create at least one species</a> before you can create a batch.</p>
+	{{end}}
+</body>
+</html>
