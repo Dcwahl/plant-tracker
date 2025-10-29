@@ -31,18 +31,37 @@ func CreateSpecies(w http.ResponseWriter, r *http.Request) {
 
 	r.ParseForm()
 
-	coldStratified := r.FormValue("cold_stratified") == "on"
+	// Parse stratification steps
+	stepTypes := r.Form["step_type[]"]
+	stepMoists := r.Form["step_moist[]"]
+	stepDays := r.Form["step_days[]"]
 
-	var stratificationDays *int
-	if sd := r.FormValue("stratification_days"); sd != "" {
-		val, _ := strconv.Atoi(sd)
-		stratificationDays = &val
+	var steps []db.StratificationStep
+	for i := range stepTypes {
+		if stepTypes[i] == "" {
+			continue // Skip empty steps
+		}
+
+		days, _ := strconv.Atoi(stepDays[i])
+		moist := false
+		// Check if this step index is in the moist array
+		for _, moistVal := range stepMoists {
+			if moistVal == strconv.Itoa(i) {
+				moist = true
+				break
+			}
+		}
+
+		steps = append(steps, db.StratificationStep{
+			Type:  stepTypes[i],
+			Moist: moist,
+			Days:  days,
+		})
 	}
 
 	species := &db.Species{
-		Name:               r.FormValue("name"),
-		ColdStratified:     coldStratified,
-		StratificationDays: stratificationDays,
+		Name:                r.FormValue("name"),
+		StratificationSteps: steps,
 	}
 
 	if err := db.CreateSpecies(species); err != nil {
@@ -74,19 +93,39 @@ func UpdateSpecies(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 
 	id, _ := strconv.Atoi(r.FormValue("id"))
-	coldStratified := r.FormValue("cold_stratified") == "on"
 
-	var stratificationDays *int
-	if sd := r.FormValue("stratification_days"); sd != "" {
-		val, _ := strconv.Atoi(sd)
-		stratificationDays = &val
+	// Parse stratification steps
+	stepTypes := r.Form["step_type[]"]
+	stepMoists := r.Form["step_moist[]"]
+	stepDays := r.Form["step_days[]"]
+
+	var steps []db.StratificationStep
+	for i := range stepTypes {
+		if stepTypes[i] == "" {
+			continue // Skip empty steps
+		}
+
+		days, _ := strconv.Atoi(stepDays[i])
+		moist := false
+		// Check if this step index is in the moist array
+		for _, moistVal := range stepMoists {
+			if moistVal == strconv.Itoa(i) {
+				moist = true
+				break
+			}
+		}
+
+		steps = append(steps, db.StratificationStep{
+			Type:  stepTypes[i],
+			Moist: moist,
+			Days:  days,
+		})
 	}
 
 	species := &db.Species{
-		ID:                 id,
-		Name:               r.FormValue("name"),
-		ColdStratified:     coldStratified,
-		StratificationDays: stratificationDays,
+		ID:                  id,
+		Name:                r.FormValue("name"),
+		StratificationSteps: steps,
 	}
 
 	if err := db.UpdateSpecies(species); err != nil {
