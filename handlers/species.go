@@ -19,8 +19,8 @@ func ListSpecies(w http.ResponseWriter, r *http.Request) {
 }
 
 func NewSpecies(w http.ResponseWriter, r *http.Request) {
-	tmpl := template.Must(template.ParseFiles("templates/species/new.html"))
-	tmpl.Execute(w, nil)
+	tmpl := template.Must(template.ParseFiles("templates/species/form.html"))
+	tmpl.Execute(w, &db.Species{})
 }
 
 func CreateSpecies(w http.ResponseWriter, r *http.Request) {
@@ -61,7 +61,7 @@ func EditSpecies(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tmpl := template.Must(template.ParseFiles("templates/species/edit.html"))
+	tmpl := template.Must(template.ParseFiles("templates/species/form.html"))
 	tmpl.Execute(w, species)
 }
 

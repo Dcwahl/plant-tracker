@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>New Species - Plant Tracker</title>
+	<title>{{if .ID}}Edit{{else}}New{{end}} Species - Plant Tracker</title>
 	<style>
 		body { font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; }
 		h1 { color: #2d5016; }
@@ -17,7 +17,7 @@
 		.btn-primary { background: #4CAF50; color: white; }
 		.btn-secondary { background: #999; color: white; margin-left: 10px; }
 		.form-actions { margin-top: 20px; }
-		#stratification_days_group { display: none; }
+		#stratification_days_group { display: {{if .ColdStratified}}block{{else}}none{{end}}; }
 	</style>
 	<script>
 		function toggleStratificationDays() {
@@ -33,27 +33,31 @@
 		<a href="/species">Species</a>
 	</div>
 
-	<h1>New Species</h1>
-	<form method="POST" action="/species/create">
+	<h1>{{if .ID}}Edit{{else}}New{{end}} Species</h1>
+	<form method="POST" action="{{if .ID}}/species/update{{else}}/species/create{{end}}">
+		{{if .ID}}
+		<input type="hidden" name="id" value="{{.ID}}">
+		{{end}}
+
 		<div class="form-group">
 			<label for="name">Species Name *</label>
-			<input type="text" id="name" name="name" required>
+			<input type="text" id="name" name="name" value="{{.Name}}" required>
 		</div>
 
 		<div class="form-group">
 			<div class="checkbox-group">
-				<input type="checkbox" id="cold_stratified" name="cold_stratified" onchange="toggleStratificationDays()">
+				<input type="checkbox" id="cold_stratified" name="cold_stratified" {{if .ColdStratified}}checked{{end}} onchange="toggleStratificationDays()">
 				<label for="cold_stratified" style="margin-bottom: 0;">Requires Cold Stratification</label>
 			</div>
 		</div>
 
 		<div class="form-group" id="stratification_days_group">
 			<label for="stratification_days">Days to Stratify</label>
-			<input type="number" id="stratification_days" name="stratification_days" min="1">
+			<input type="number" id="stratification_days" name="stratification_days" value="{{if .StratificationDays}}{{.StratificationDays}}{{end}}" min="1">
 		</div>
 
 		<div class="form-actions">
-			<button type="submit" class="btn btn-primary">Create Species</button>
+			<button type="submit" class="btn btn-primary">{{if .ID}}Update{{else}}Create{{end}} Species</button>
 			<a href="/species" class="btn btn-secondary">Cancel</a>
 		</div>
 	</form>
