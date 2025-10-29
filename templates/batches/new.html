@@ -36,10 +36,8 @@
 			<select id="species_id" name="species_id" required>
 				<option value="">Select a species...</option>
 				{{range .Species}}
-				<option value="{{.ID}}"
-					data-stratified="{{.ColdStratified}}"
-					data-days="{{if .StratificationDays}}{{.StratificationDays}}{{end}}">
-					{{.Name}}{{if .ColdStratified}} 🧊{{end}}{{if .StratificationDays}} ({{.StratificationDays}} days){{end}}
+				<option value="{{.ID}}">
+					{{.Name}}{{if .StratificationSteps}} - {{range $index, $step := .StratificationSteps}}{{if $index}} → {{end}}{{$step.Type}}{{if $step.Moist}}(M){{end}} {{$step.Days}}d{{end}}{{end}}
 				</option>
 				{{end}}
 			</select>

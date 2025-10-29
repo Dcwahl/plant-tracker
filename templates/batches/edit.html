@@ -35,10 +35,8 @@
 			<label for="species_id">Species *</label>
 			<select id="species_id" name="species_id" required>
 				{{range .Species}}
-				<option value="{{.ID}}" {{if eq .ID $.Batch.SpeciesID}}selected{{end}}
-					data-stratified="{{.ColdStratified}}"
-					data-days="{{if .StratificationDays}}{{.StratificationDays}}{{end}}">
-					{{.Name}}{{if .ColdStratified}} 🧊{{end}}{{if .StratificationDays}} ({{.StratificationDays}} days){{end}}
+				<option value="{{.ID}}" {{if eq .ID $.Batch.SpeciesID}}selected{{end}}>
+					{{.Name}}{{if .StratificationSteps}} - {{range $index, $step := .StratificationSteps}}{{if $index}} → {{end}}{{$step.Type}}{{if $step.Moist}}(M){{end}} {{$step.Days}}d{{end}}{{end}}
 				</option>
 				{{end}}
 			</select>

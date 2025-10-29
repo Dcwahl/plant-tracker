@@ -37,8 +37,7 @@
 		<thead>
 			<tr>
 				<th>Name</th>
-				<th>Cold Stratified</th>
-				<th>Days to Stratify</th>
+				<th>Stratification Steps</th>
 				<th>Actions</th>
 			</tr>
 		</thead>
@@ -46,8 +45,16 @@
 			{{range .}}
 			<tr>
 				<td>{{.Name}}</td>
-				<td>{{if .ColdStratified}}<span class="badge">Yes</span>{{else}}-{{end}}</td>
-				<td>{{if .StratificationDays}}{{.StratificationDays}} days{{else}}-{{end}}</td>
+				<td>
+					{{if .StratificationSteps}}
+						{{range $index, $step := .StratificationSteps}}
+							{{if $index}} → {{end}}
+							<span class="badge">{{$step.Type}}{{if $step.Moist}} (moist){{end}} {{$step.Days}}d</span>
+						{{end}}
+					{{else}}
+						-
+					{{end}}
+				</td>
 				<td>
 					<div class="actions">
 						<a href="/species/edit?id={{.ID}}" class="btn btn-secondary">Edit</a>
